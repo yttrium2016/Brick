@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yangzhenyu.brick.dao.TableDao">
+
+    <!-- Column实体 -->
+    <resultMap id="ColumnResult" type="cn.com.yangzhenyu.brick.pojo.Column">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="table_name" jdbcType="VARCHAR" property="tableName"/>
+        <result column="column_name" jdbcType="VARCHAR" property="columnName"/>
+        <result column="column_ch" jdbcType="VARCHAR" property="columnCh"/>
+        <result column="java_type" jdbcType="VARCHAR" property="javaType"/>
+        <result column="data_type" jdbcType="VARCHAR" property="dataType"/>
+        <result column="data_type_num" jdbcType="INTEGER" property="dataTypeNum"/>
+        <result column="default_data" jdbcType="VARCHAR" property="defaultData"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="is_default" jdbcType="INTEGER" property="isDefault"/>
+        <result column="is_allow_null" jdbcType="INTEGER" property="isAllowNull"/>
+        <result column="is_default_now" jdbcType="INTEGER" property="isDefaultNow"/>
+    </resultMap>
+
+    <!-- 条件 单参数 -->
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <!-- 条件 多参数下的 -->
+    <sql id="Parameter_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <update id="init">
+      CREATE table IF NOT EXISTS `bbb` (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `bookName` varchar(50) DEFAULT NULL,
+          `bookUrl` varchar(100) DEFAULT NULL,
+          `bookBanner` varchar(100) DEFAULT NULL,
+          PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+    </update>
+
+    <update id="initData">
+--             INSERT INTO `bbb` (bookName,bookUrl,bookBanner) VALUES ( '知更鸟女孩', 'https://book.douban.com/subject/26707942/?icn=index-editionrecommend', 'https://img3.doubanio.com/mpic/s28535995.jpg');
+            INSERT INTO `bbb` (`bookName`, `bookUrl`, `bookBanner`) VALUES ('知更鸟女孩', 'https://book.douban.com/subject/26707942/?icn=index-editionrecommend', 'https://img3.doubanio.com/mpic/s28535995.jpg');
+    </update>
+
+
+    <update id="addEntityColumns" parameterType="java.util.Map">
+        <if test="columns != null and columns.size() != 0">
+            alter table ${entityName}
+            <foreach collection="columns" item="item" index="index" open="" separator="," close="">
+                add ${item}
+            </foreach>
+        </if>
+    </update>
+
+    <update id="deleteEntityColumns" parameterType="java.util.Map">
+        <if test="columns != null and columns.size() != 0">
+            alter table ${entityName}
+            <foreach collection="columns" item="item" index="index" open="" separator="," close="">
+                drop column ${item}
+            </foreach>
+        </if>
+    </update>
+
+
+    <update id="createEntity" parameterType="java.util.Map">
+    CREATE TABLE ${entityName} (
+      `id`  int NOT NULL AUTO_INCREMENT COMMENT '序号' ,
+      `name`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '名字' ,
+      PRIMARY KEY (`id`)
+      );
+  </update>
+
+    <update id="deleteEntity" parameterType="java.util.Map">
+        <if test="entityName != null and entityName != '' ">
+            drop table ${entityName}
+        </if>
+    </update>
+
+
+    <select id="getEntityList" parameterType="java.util.Map" resultType="java.util.HashMap">
+        select * from ${entityName} limit ${pageIndex},${pageSize}
+        <where>
+            <if test="params != null and params.size() != 0">
+                <foreach collection="params" item="item" index="index" open="" separator="" close="">
+                    AND ${item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getEntityCount" parameterType="java.util.Map" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM ${entityName}
+        <where>
+            <if test="params != null and params.size() != 0">
+                <foreach collection="params" item="item" index="index" open="" separator="" close="">
+                    AND ${item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="getEntityAllList" parameterType="java.util.Map" resultType="java.util.LinkedHashMap">
+    select * from  ${entityName}
+  </select>
+
+    <select id="selectEntityList" parameterType="map" resultType="java.util.LinkedHashMap">
+        select * from ${entityInfo.entityName}
+        <if test="example != null">
+            <include refid="Parameter_Example_Where_Clause"/>
+        </if>
+        <if test="example.orderByClause != null">
+            order by ${example.orderByClause}
+        </if>
+    </select>
+
+    <select id="selectEntityOneByExample" parameterType="cn.com.yangzhenyu.brick.example.CommonExample"
+            resultType="java.util.LinkedHashMap">
+        select
+        <if test="columnNames != null and columnNames.size() > 0">
+            <foreach collection="columnNames" item="columnName" index="index" open="" separator="," close="">
+                ${columnName}
+            </foreach>
+        </if>
+        <if test="columnNames == null or columnNames.size() == 0">
+            *
+        </if>
+        from ${entityName}
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+
+    <select id="selectEntityListByExample" parameterType="cn.com.yangzhenyu.brick.example.CommonExample"
+            resultType="java.util.LinkedHashMap">
+        <if test="entityName == null">
+            SELECT '实体名(表名) 不能为null' AS 'error';
+        </if>
+        <if test="entityName != null">
+            select
+            <if test="columnNames != null and columnNames.size() > 0">
+                <foreach collection="columnNames" item="columnName" index="index" open="" separator="," close="">
+                    ${columnName}
+                </foreach>
+            </if>
+            <if test="columnNames == null or columnNames.size() == 0">
+                *
+            </if>
+            from ${entityName}
+            <if test="_parameter != null">
+                <include refid="Example_Where_Clause"/>
+            </if>
+            <if test="orderByClause != null">
+                order by ${orderByClause}
+            </if>
+            <if test="paging">
+                limit #{pageIndex},#{pageSize}
+            </if>
+        </if>
+    </select>
+
+
+    <!-- 开始自己写sql -->
+    <!-- 初始化新建表 -->
+    <!-- 字段表总表 -->
+    <!-- 总表 -->
+    <!-- SQL执行LOG表 -->
+    <!-- 记得修改 还不是最终表 -->
+    <update id="initSystemTables">
+
+        CREATE table IF NOT EXISTS `sql_log` (
+          `id` int(255) NOT NULL AUTO_INCREMENT COMMENT '序号 ',
+          `sql` text COMMENT 'SQL语句',
+          `type` varchar(255) DEFAULT NULL COMMENT '类别',
+          `date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+          PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+        CREATE table IF NOT EXISTS `system_table` (
+          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '序号',
+          `table_name` varchar(255) DEFAULT NULL COMMENT '表名',
+          `table_show_name` varchar(255) DEFAULT NULL COMMENT '表显示名字',
+          `create_date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+          `table_type` int(11) DEFAULT NULL COMMENT '表类型',
+          `delete_flag` int(11) DEFAULT '0' COMMENT '删除标记',
+          PRIMARY KEY (`id`),
+          UNIQUE KEY `table_name` (`table_name`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+        CREATE table IF NOT EXISTS `system_column` (
+          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '序号',
+          `table_name` varchar(255) DEFAULT NULL COMMENT '表名',
+          `column_name` varchar(255) DEFAULT NULL COMMENT '字段名',
+          `column_show_name` varchar(255) DEFAULT NULL COMMENT '字段显示名字',
+          `java_type` varchar(255) DEFAULT NULL COMMENT 'Java类型',
+          `data_type` varchar(255) DEFAULT NULL COMMENT '数据类型',
+          `data_type_length` int(11) DEFAULT NULL COMMENT '数据长度',
+          `default_data` varchar(255) DEFAULT NULL COMMENT '默认值',
+          `delete_flag` int(11) DEFAULT '0' COMMENT '删除标记',
+          `create_date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+          `is_default` int(2) DEFAULT NULL COMMENT '是否有默认',
+          `is_null` int(2) DEFAULT NULL COMMENT '是否为空',
+          `is_date_update_now` int(2) DEFAULT NULL COMMENT '是否是更新自己获取的时间',
+          `is_date_create_now` int(2) DEFAULT NULL COMMENT '是否是创建自己获取的时间',
+          PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    </update>
+
+    <update id="createTable" parameterType="cn.com.yangzhenyu.brick.pojo.Table">
+        <if test="tableName != null and sqlTableName != null">
+            CREATE TABLE ${tableName} (
+            `${tableName}_id` int NOT NULL AUTO_INCREMENT COMMENT '序号 主键' ,
+            `create_date` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间' ,
+            `update_date` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间' ,
+            PRIMARY KEY (`${tableName}_id`)
+            )
+            <if test="tableShowName != null">
+                COMMENT='${tableShowName}'
+            </if>
+        </if>
+    </update>
+
+    <update id="deleteTable" parameterType="cn.com.yangzhenyu.brick.pojo.Table">
+        <if test="tableName != null and tableName != '' ">
+            drop table ${tableName}
+        </if>
+    </update>
+
+    <update id="addColumn" parameterType="cn.com.yangzhenyu.brick.pojo.Column">
+        <if test="sqlTableName != null and sqlColumnName != null and sqlDataType != null">
+            ALTER TABLE ${sqlTableName} ADD COLUMN ${sqlColumnName} ${sqlDataType}
+            <if test="isNull">
+                NULL
+            </if>
+            <if test="!isNull">
+                NOT NULL
+            </if>
+
+            <if test="isDefault and sqlDefaultData != null">
+                DEFAULT ${sqlDefaultData}
+            </if>
+
+            <if test="isDateUpdateNow">
+                ON UPDATE CURRENT_TIMESTAMP
+            </if>
+        </if>
+    </update>
+
+    <update id="modifyColumn" parameterType="cn.com.yangzhenyu.brick.pojo.Column">
+        <if test="sqlTableName != null and sqlColumnName != null and sqlDataType != null">
+            ALTER TABLE ${sqlTableName} MODIFY COLUMN ${sqlColumnName} ${sqlDataType}
+            <if test="isNull">
+                NULL
+            </if>
+            <if test="!isNull">
+                NOT NULL
+            </if>
+
+            <if test="isDefault and sqlDefaultData != null">
+                DEFAULT ${sqlDefaultData}
+            </if>
+
+            <if test="isDateUpdateNow">
+                ON UPDATE CURRENT_TIMESTAMP
+            </if>
+        </if>
+    </update>
+
+    <update id="deleteColumn" parameterType="cn.com.yangzhenyu.brick.pojo.Column">
+        <if test="sqlTableName != null and sqlColumnName != null">
+            ALTER TABLE ${sqlTableName} DROP COLUMN ${sqlColumnName}
+        </if>
+    </update>
+
+    <insert id="initSystemColumnByTable" parameterType="cn.com.yangzhenyu.brick.pojo.Table">
+        INSERT INTO `system_column` (`table_name`, `column_name`, `column_show_name`, `java_type`, `data_type`, `data_type_length`, `default_data`) VALUES (#{tableName}, '${tableName}_id', '主键', 'INT', 'INT', '11', NULL);
+        INSERT INTO `system_column` (`table_name`, `column_name`, `column_show_name`, `java_type`, `data_type`, `data_type_length`, `default_data`, `delete_flag`, `is_default`, `is_null`, `is_date_update_now`, `is_date_create_now`) VALUES (#{tableName}, 'create_date', '创建时间', 'DATE', 'DATETIME', NULL, 'CURRENT_TIMESTAMP', '0', '1', '1', '1', '1');
+        INSERT INTO `system_column` (`table_name`, `column_name`, `column_show_name`, `java_type`, `data_type`, `data_type_length`, `default_data`, `delete_flag`, `is_default`, `is_null`, `is_date_update_now`, `is_date_create_now`) VALUES (#{tableName}, 'update_date', '修改时间', 'DATE', 'DATETIME', NULL, 'CURRENT_TIMESTAMP', '0', '1', '1', '0', '1');
+    </insert>
+
+    <insert id="insertSystemColumn" parameterType="cn.com.yangzhenyu.brick.pojo.Column">
+        INSERT INTO `system_column`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tableName != null">
+                `table_name`,
+            </if>
+            <if test="columnName != null">
+                `column_name`,
+            </if>
+            <if test="columnShowName != null">
+                `column_show_name`,
+            </if>
+            <if test="javaType != null">
+                `java_type`,
+            </if>
+            <if test="dataType != null">
+                `data_type`,
+            </if>
+            <if test="dataTypeLength != null">
+                `data_type_length`,
+            </if>
+            <if test="defaultData != null">
+                `default_data`,
+            </if>
+            <if test="isDefault != null">
+                `is_default`,
+            </if>
+            <if test="isNull != null">
+                `is_null`,
+            </if>
+            <if test="isDateUpdateNow != null">
+                `is_date_update_now`,
+            </if>
+            <if test="isDateCreateNow != null">
+                `is_date_create_now`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tableName != null">
+                #{tableName},
+            </if>
+            <if test="columnName != null">
+                #{columnName},
+            </if>
+            <if test="columnShowName != null">
+                #{columnShowName},
+            </if>
+            <if test="javaType != null">
+                #{javaType},
+            </if>
+            <if test="dataType != null">
+                #{dataType},
+            </if>
+            <if test="dataTypeLength != null">
+                #{dataTypeLength},
+            </if>
+            <if test="defaultData != null">
+                #{defaultData},
+            </if>
+            <if test="isDefault != null">
+                #{isDefault},
+            </if>
+            <if test="isNull != null">
+                #{isNull},
+            </if>
+            <if test="isDateUpdateNow != null">
+                #{isDateUpdateNow},
+            </if>
+            <if test="isDateCreateNow != null">
+                #{isDateCreateNow},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSystemColumnById" parameterType="cn.com.yangzhenyu.brick.pojo.Column">
+        UPDATE `system_column`
+        <trim prefix="SET " suffix=" " suffixOverrides=",">
+            <if test="tableName != null">
+                `table_name` = #{tableName},
+            </if>
+            <if test="columnName != null">
+                `column_name` = #{columnName},
+            </if>
+            <if test="columnShowName != null">
+                `column_show_name` = #{columnShowName},
+            </if>
+            <if test="javaType != null">
+                `java_type` = #{javaType},
+            </if>
+            <if test="dataType != null">
+                `data_type` = #{dataType},
+            </if>
+            <if test="dataTypeLength != null">
+                `data_type_length` = #{dataTypeLength},
+            </if>
+            <if test="defaultData != null">
+                `default_data` = #{defaultData},
+            </if>
+            <if test="isDefault != null">
+                `is_default` = #{isDefault},
+            </if>
+            <if test="isNull != null">
+                `is_null` = #{isNull},
+            </if>
+            <if test="isDateUpdateNow != null">
+                `is_date_update_now` = #{isDateUpdateNow},
+            </if>
+            <if test="isDateCreateNow != null">
+                `is_date_create_now` = #{isDateCreateNow},
+            </if>
+        </trim>
+        WHERE (`id`= #{id}) LIMIT 1
+    </update>
+
+    <update id="deleteSystemColumnById" parameterType="cn.com.yangzhenyu.brick.pojo.Column">
+        DELETE FROM `system_column` WHERE (`id`= #{id})
+    </update>
+
+    <update id="updateSystemColumnByColumnName" parameterType="cn.com.yangzhenyu.brick.pojo.Column">
+        UPDATE `system_column`
+        <trim prefix="SET " suffix=" " suffixOverrides=",">
+            <if test="tableName != null">
+                `table_name` = #{tableName},
+            </if>
+            <if test="columnName != null">
+                `column_name` = #{columnName},
+            </if>
+            <if test="columnShowName != null">
+                `column_show_name` = #{columnShowName},
+            </if>
+            <if test="javaType != null">
+                `java_type` = #{javaType},
+            </if>
+            <if test="dataType != null">
+                `data_type` = #{dataType},
+            </if>
+            <if test="dataTypeLength != null">
+                `data_type_length` = #{dataTypeLength},
+            </if>
+            <if test="defaultData != null">
+                `default_data` = #{defaultData},
+            </if>
+            <if test="isDefault != null">
+                `is_default` = #{isDefault},
+            </if>
+            <if test="isNull != null">
+                `is_null` = #{isNull},
+            </if>
+            <if test="isDateUpdateNow != null">
+                `is_date_update_now` = #{isDateUpdateNow},
+            </if>
+            <if test="isDateCreateNow != null">
+                `is_date_create_now` = #{isDateCreateNow},
+            </if>
+        </trim>
+        WHERE (`table_name`= #{tableName} AND `colunm_name` = #{columnName}) LIMIT 1
+    </update>
+
+    <update id="deleteSystemColumnByColumnName" parameterType="cn.com.yangzhenyu.brick.pojo.Column">
+        DELETE FROM `system_column` WHERE (`table_name`= #{tableName} AND `colunm_name` = #{columnName})
+    </update>
+
+    <update id="deleteSystemColumnByTableName" parameterType="java.lang.String">
+        DELETE FROM `system_column` WHERE (`table_name`= #{tableName} )
+    </update>
+
+    <insert id="insertSystemTable" parameterType="cn.com.yangzhenyu.brick.pojo.Table">
+        INSERT INTO `system_table`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tableName != null">
+                `table_name`,
+            </if>
+            <if test="tableShowName != null">
+                `table_show_name`,
+            </if>
+            <if test="tableType != null">
+                `table_type`,
+            </if>
+            <if test="deleteFlag != null">
+                `delete_flag`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tableName != null">
+                #{tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="tableShowName != null">
+                #{tableShowName,jdbcType=VARCHAR},
+            </if>
+            <if test="tableType != null">
+                #{tableType,jdbcType=INTEGER},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="deleteSystemTableByTableName" parameterType="cn.com.yangzhenyu.brick.pojo.Table">
+        DELETE FROM `system_table` WHERE (`table_name`=#{tableName})
+    </update>
+
+    <select id="selectListByExample" parameterType="cn.com.yangzhenyu.brick.example.CommonExample"
+            resultType="java.util.LinkedHashMap">
+        <if test="tableName != null">
+            select
+            <if test="columnNames != null and columnNames.size() > 0">
+                <foreach collection="columnNames" item="columnName" index="index" open="" separator="," close="">
+                    ${columnName}
+                </foreach>
+            </if>
+            <if test="columnNames == null or columnNames.size() == 0">
+                *
+            </if>
+            from ${tableName}
+            <if test="_parameter != null">
+                <include refid="Example_Where_Clause"/>
+            </if>
+            <if test="orderByClause != null">
+                order by ${orderByClause}
+            </if>
+            <if test="paging">
+                limit #{pageIndex},#{pageSize}
+            </if>
+        </if>
+    </select>
+
+    <select id="selectOneByExample" parameterType="cn.com.yangzhenyu.brick.example.CommonExample"
+            resultType="java.util.LinkedHashMap">
+        <if test="tableName != null">
+            select
+            <if test="columnNames != null and columnNames.size() > 0">
+                <foreach collection="columnNames" item="columnName" index="index" open="" separator="," close="">
+                    ${columnName}
+                </foreach>
+            </if>
+            <if test="columnNames == null or columnNames.size() == 0">
+                *
+            </if>
+            from ${tableName}
+            <if test="_parameter != null">
+                <include refid="Example_Where_Clause"/>
+            </if>
+            limit 1;
+        </if>
+    </select>
+
+    <select id="selectListCountByExample" parameterType="cn.com.yangzhenyu.brick.example.CommonExample"
+            resultType="java.lang.Long">
+        <if test="tableName != null">
+            select COUNT(*) from ${tableName}
+            <if test="_parameter != null">
+                <include refid="Example_Where_Clause"/>
+            </if>
+        </if>
+    </select>
+
+    <insert id="insertData" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() as id
+        </selectKey>
+
+        <if test="data != null and data.size() != 0 and tableName != null and tableName != '' ">
+            insert into ${tableName}
+            <foreach collection="data.keys" item="key" index="index" open="(" separator="," close=")">
+                `${key}`
+            </foreach>
+            values
+            <foreach collection="data.keys" item="key" index="index" open="(" separator="," close=")">
+                #{data[${key}]}
+            </foreach>
+        </if>
+
+        <if test="data == null or data.size() == 0 or tableName == null or tableName == ''">
+            SELECT -1
+        </if>
+    </insert>
+
+    <insert id="updateData" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        <if test="data == null or data.size() == 0 or tableName == null or tableName == ''">
+            SELECT -1
+        </if>
+
+        <if test="(id == null or id == -1) and ( where == null or where.size() == 0 )">
+            SELECT -1
+        </if>
+
+        <if test="( data != null and data.size() != 0 and tableName != null and tableName != '') and (( id != null and id != -1 ) or ( where != null and where.size() > 0 )) ">
+            UPDATE ${tableName}
+            <foreach collection="data.keys" item="key" index="index" open="SET " separator="," close=" ">
+                `${key}` = #{data[${key}]}
+            </foreach>
+            <if test="id != null and id != -1">
+                WHERE (`${tableName}_id`=#{id}) LIMIT 1
+            </if>
+            <if test="id == null or id == -1">
+                <if test="where != null and where.size() > 0">
+                    <foreach collection="where.keys" item="key" index="index" open="WHERE " separator=" and " close=" ">
+                        `${key}` = #{where[${key}]}
+                    </foreach>
+                </if>
+            </if>
+        </if>
+    </insert>
+
+    <insert id="deleteData" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        <if test="id == null or id == -1">
+            <if test="where == null or where.size() == 0">
+                <if test="tableName == null or tableName == ''">
+                    SELECT -1
+                </if>
+            </if>
+        </if>
+
+        <if test="tableName != null and tableName != '' and (( id != null and id != -1 ) or ( where != null and where.size() > 0 )) ">
+            DELETE FROM ${tableName}
+            <if test="id != null and id != -1">
+                WHERE (`${tableName}_id`=#{id}) LIMIT 1
+            </if>
+            <if test="id == null or id == -1">
+                <if test="where != null and where.size() > 0">
+                    <foreach collection="where.keys" item="key" index="index" open="WHERE " separator=" and " close=" ">
+                        ${key} = #{where[${key}]}
+                    </foreach>
+                </if>
+            </if>
+        </if>
+    </insert>
+
+</mapper>

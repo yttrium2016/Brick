@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.yangzhenyu.brick.dao.CommonDao">
+    <!-- 条件 单参数 -->
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <!-- 条件 多参数下的 -->
+    <sql id="Parameter_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <update id="init">
+      CREATE table IF NOT EXISTS `bbb` (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `bookName` varchar(50) DEFAULT NULL,
+          `bookUrl` varchar(100) DEFAULT NULL,
+          `bookBanner` varchar(100) DEFAULT NULL,
+          PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+    </update>
+
+    <update id="initData">
+--             INSERT INTO `bbb` (bookName,bookUrl,bookBanner) VALUES ( '知更鸟女孩', 'https://book.douban.com/subject/26707942/?icn=index-editionrecommend', 'https://img3.doubanio.com/mpic/s28535995.jpg');
+            INSERT INTO `bbb` (`bookName`, `bookUrl`, `bookBanner`) VALUES ('知更鸟女孩', 'https://book.douban.com/subject/26707942/?icn=index-editionrecommend', 'https://img3.doubanio.com/mpic/s28535995.jpg');
+    </update>
+
+
+    <update id="addEntityColumns" parameterType="java.util.Map">
+        <if test="columns != null and columns.size() != 0">
+            alter table ${entityName}
+            <foreach collection="columns" item="item" index="index" open="" separator="," close="">
+                add ${item}
+            </foreach>
+        </if>
+    </update>
+
+    <update id="deleteEntityColumns" parameterType="java.util.Map">
+        <if test="columns != null and columns.size() != 0">
+            alter table ${entityName}
+            <foreach collection="columns" item="item" index="index" open="" separator="," close="">
+                drop column ${item}
+            </foreach>
+        </if>
+    </update>
+
+
+    <update id="createEntity" parameterType="java.util.Map">
+    CREATE TABLE ${entityName} (
+      `id`  int NOT NULL AUTO_INCREMENT COMMENT '序号' ,
+      `name`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '名字' ,
+      PRIMARY KEY (`id`)
+      );
+  </update>
+
+    <update id="deleteEntity" parameterType="java.util.Map">
+        <if test="entityName != null and entityName != '' ">
+            drop table ${entityName}
+        </if>
+    </update>
+
+    <insert id="insertData" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() as id
+        </selectKey>
+
+        <if test="params != null and params.size() != 0 and entityName != null and entityName != '' ">
+            insert into ${entityName}
+            <foreach collection="params.keys" item="key" index="index" open="(" separator="," close=")">
+                ${key}
+            </foreach>
+            values
+            <foreach collection="params.keys" item="key" index="index" open="(" separator="," close=")">
+                #{params[${key}]}
+            </foreach>
+        </if>
+        <if test="params == null or params.size() == 0 or entityName == null or entityName == ''">
+            SELECT -1
+        </if>
+    </insert>
+
+    <select id="getEntityList" parameterType="java.util.Map" resultType="java.util.HashMap">
+        select * from ${entityName} limit ${pageIndex},${pageSize}
+        <where>
+            <if test="params != null and params.size() != 0">
+                <foreach collection="params" item="item" index="index" open="" separator="" close="">
+                    AND ${item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getEntityCount" parameterType="java.util.Map" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM ${entityName}
+        <where>
+            <if test="params != null and params.size() != 0">
+                <foreach collection="params" item="item" index="index" open="" separator="" close="">
+                    AND ${item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="getEntityAllList" parameterType="java.util.Map" resultType="java.util.LinkedHashMap">
+    select * from  ${entityName}
+  </select>
+
+    <select id="selectEntityList" parameterType="map" resultType="java.util.LinkedHashMap">
+        select * from ${entityInfo.entityName}
+        <if test="example != null">
+            <include refid="Parameter_Example_Where_Clause"/>
+        </if>
+        <if test="example.orderByClause != null">
+            order by ${example.orderByClause}
+        </if>
+    </select>
+
+    <select id="selectEntityOneByExample" parameterType="cn.com.yangzhenyu.brick.example.CommonExample" resultType="java.util.LinkedHashMap">
+        select
+        <if test="columnNames != null and columnNames.size() > 0">
+            <foreach collection="columnNames" item="columnName" index="index" open="" separator="," close="">
+                ${columnName}
+            </foreach>
+        </if>
+        <if test="columnNames == null or columnNames.size() == 0">
+            *
+        </if>
+        from ${entityName}
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+
+    <select id="selectEntityListByExample" parameterType="cn.com.yangzhenyu.brick.example.CommonExample"
+            resultType="java.util.LinkedHashMap">
+        <if test="entityName == null">
+            SELECT '实体名(表名) 不能为null' AS 'error';
+        </if>
+        <if test="entityName != null">
+            select
+            <if test="columnNames != null and columnNames.size() > 0">
+                <foreach collection="columnNames" item="columnName" index="index" open="" separator="," close="">
+                    ${columnName}
+                </foreach>
+            </if>
+            <if test="columnNames == null or columnNames.size() == 0">
+                *
+            </if>
+            from ${entityName}
+            <if test="_parameter != null">
+                <include refid="Example_Where_Clause"/>
+            </if>
+            <if test="orderByClause != null">
+                order by ${orderByClause}
+            </if>
+            <if test="paging">
+                limit #{pageIndex},#{pageSize}
+            </if>
+        </if>
+    </select>
+
+
+    <select id="selectEntityCountByExample" parameterType="cn.com.yangzhenyu.brick.example.CommonExample" resultType="java.lang.Long">
+        select COUNT(*) from ${entityName}
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+
+</mapper>
