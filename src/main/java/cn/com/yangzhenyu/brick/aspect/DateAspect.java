@@ -31,22 +31,23 @@ public class DateAspect {
             //前
             result = point.proceed();
             if (result instanceof List<?>) {
-                List<LinkedHashMap<String, Object>> list = (List<LinkedHashMap<String, Object>>) result;
+                List list = (List) result;
                 Long s = System.currentTimeMillis();
-                for (LinkedHashMap<String, Object> map : list) {
-                    formatData(map);
+                for (Object obj : list) {
+                    if (obj instanceof Map<?, ?>) {
+                        formatData((Map) obj);
+                    }
                 }
                 Long e = System.currentTimeMillis();
                 System.out.println("时间类型转换的时间为:[" + (e - s) + "]");
                 return list;
             }
-            if (result instanceof LinkedHashMap<?, ?>) {
-                LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) result;
+            if (result instanceof Map<?, ?>) {
                 Long s = System.currentTimeMillis();
-                formatData(data);
+                formatData((Map) result);
                 Long e = System.currentTimeMillis();
                 System.out.println("时间类型转换的时间为:[" + (e - s) + "]");
-                return data;
+                return result;
             }
             //后
         } catch (Exception e) {
@@ -55,14 +56,23 @@ public class DateAspect {
         return result;
     }
 
-    private void formatData(Map<String, Object> map) {
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            String key = entry.getKey();
+    private void formatData(Map map) {
+        if (map == null || map.size() == 0) return;
+        for (Object o : map.entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
+            Object key = entry.getKey();
             Object value = entry.getValue();
             if (value instanceof Date) {
                 map.put(key, DateUtil.format((Date) value, format == null ? "yyyy-MM-dd HH:mm:ss" : format));
             }
         }
+//        for (Object entry : map.entrySet()) {
+//            String key = entry.getKey().toString();
+//            Object value = entry.getValue();
+//            if (value instanceof Date) {
+//                map.put(key, DateUtil.format((Date) value, format == null ? "yyyy-MM-dd HH:mm:ss" : format));
+//            }
+//        }
     }
 
 }

@@ -4,10 +4,10 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>主页面</title>
+    <title>新建表</title>
     <!-- Bootstrap core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/index.css" rel="stylesheet">
+    <link href="/css/table.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/ladda/ladda-themeless.min.css">
 </head>
 <body>
@@ -21,7 +21,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">主页面</a>
+            <a class="navbar-brand" href="/">主页面</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
@@ -44,113 +44,75 @@
     </div>
 </nav>
 
-<main class="benefits container">
-    <!-- Example row of columns -->
-    <div class="row" style="padding: 20px 60px 0 20px;">
-        <div class="form-group">
-            <label for="input_url"><h2>请输入请求的URL地址</h2></label>
+<div class="container" style="margin-top: 50px">
+    <div class="header clearfix">
+        <div class="input-group" style="width:700px;">
             <div class="input-group">
                 <div class="input-group-btn">
                     <button id="btn_method" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false" style="width: 85px">GET<span
-                            class="caret"></span></button>
-                    <ul class="dropdown-menu method">
-                        <li><a href="#" onclick="set_method('GET')">GET</a></li>
-                        <li><a href="#" onclick="set_method('POST')">POST</a></li>
-                    </ul>
+                            aria-haspopup="true" aria-expanded="false" style="width: 85px">GET
+                    </button>
+                    <#--<ul class="dropdown-menu method">-->
+                        <#--<li><a href="#" onclick="set_method('GET')">GET</a></li>-->
+                        <#--<li><a href="#" onclick="set_method('POST')">POST</a></li>-->
+                    <#--</ul>-->
                 </div>
-                <input type="text" class="form-control" id="input_url" placeholder="URL">
-                <div class="input-group-btn">
-                    <button id="btn-method" class="btn btn-info ladda-button" data-style="slide-up" onclick="go();">
-                        <span class="ladda-label">请求</span></button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6" style="padding-right: 60px;">
-            <h2>header
-                <button type="button" class="btn btn-info" style="float: right;" onclick="add_header();">新增</button>
-            </h2>
-            <p>
-            <table class="table table-striped table-hover" style="margin-right: 33px;border:1px solid #eeeeee;">
-                <thead>
-                <tr>
-                    <th onclick="all_header()" style="cursor:pointer;">#</th>
-                    <th>Key</th>
-                    <th>Value</th>
-                    <th>取消</th>
-                </tr>
-                </thead>
-                <tbody id="header_table">
-                <tr t="header">
-                    <th scope="row"><input class="cbx-header" type="checkbox"></th>
-                    <td>
-                        <div class="form-group group-input"><input type="text" onchange="key_change(this);">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group group-input"><input type="text" onchange="value_change(this);">
-                        </div>
-                    </td>
-                    <td><span onclick="delete_tr(this);" class="glyphicon glyphicon-remove span_delete" aria-hidden="true"></span></td>
-                </tr>
-                </tbody>
-            </table>
-            </p>
-        </div>
-        <div class="col-md-6" style="padding-right: 60px;">
-            <h2>params
-                <button type="button" class="btn btn-info" style="float: right;" onclick="add_params();">新增
-                </button>
-            </h2>
-            <p>
-            <table class="table table-striped table-hover" style="margin-right: 33px;border:1px solid #eeeeee;">
-                <thead>
-                <tr>
-                    <th onclick="all_params();" style="cursor:pointer;">#</th>
-                    <th>Key</th>
-                    <th>Value</th>
-                    <th>取消</th>
-                </tr>
-                </thead>
-                <tbody id="params_table">
-                <tr t="params">
-                    <th scope="row"><input class="cbx-params" type="checkbox"></th>
-                    <td>
-                        <div class="form-group group-input"><input type="text" onchange="key_change(this);">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group group-input"><input type="text" onchange="value_change(this);">
-                        </div>
-                    </td>
-                    <td>
-                        <span onclick="delete_tr(this);" class="glyphicon glyphicon-remove span_delete" aria-hidden="true"></span>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            </p>
-        </div>
-    </div>
-    <div class="row" style="padding:10px 60px 0 15px;">
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <h3 class="panel-title">返回结果:</h3>
-            </div>
-            <div class="panel-body">
-                <pre id="show_result">
-
-                </pre>
+                <select class="form-control" style="width:100%;">
+                    <option value="1">a</option>
+                    <option value="1">a</option>
+                    <option value="1">a</option>
+                    <option value="1">a</option>
+                    <option value="1">a</option>
+                    <option value="1">a</option>
+                </select>
+                <#--<div class="input-group-btn">-->
+                    <#--<button id="btn-method" class="btn btn-info ladda-button" data-style="slide-up" onclick="go();">-->
+                        <#--<span class="ladda-label">请求</span></button>-->
+                <#--</div>-->
             </div>
         </div>
 
     </div>
+
+    <div class="jumbotron">
+        <h1>Jumbotron heading</h1>
+        <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus
+            commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+        <p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>
+    </div>
+
+    <div class="row marketing">
+        <div class="col-lg-6">
+            <h4>Subheading</h4>
+            <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+            <h4>Subheading</h4>
+            <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet
+                fermentum.</p>
+
+            <h4>Subheading</h4>
+            <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+        </div>
+
+        <div class="col-lg-6">
+            <h4>Subheading</h4>
+            <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+            <h4>Subheading</h4>
+            <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet
+                fermentum.</p>
+
+            <h4>Subheading</h4>
+            <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+        </div>
+    </div>
+
+
     <footer class="footer">
-        <p>&copy; Copyright © 2017 yttrium2016.cn </p>
+        <p>&copy; 2016 Company, Inc.</p>
     </footer>
-</main>
+
+</div> <!-- /container -->
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/layer/layer.js"></script>

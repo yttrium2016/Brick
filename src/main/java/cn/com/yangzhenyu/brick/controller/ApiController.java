@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -100,15 +101,27 @@ public class ApiController {
                 }
                 if ("find".equalsIgnoreCase(action)) {
                     FindData findData = JSONUtil.toBean(data, FindData.class);
-                    return ApiResult.success().data(tableService.findListData(findData));
+                    List<LinkedHashMap<String, Object>> list = tableService.findListData(findData);
+                    if (list == null || list.size() == 0) {
+                        return ApiResult.error(600, "数据表[" + findData.getTableName() + "]不存在或者数据为空");
+                    }
+                    return ApiResult.success().data(list);
                 }
                 if ("one".equalsIgnoreCase(action)) {
                     FindData findData = JSONUtil.toBean(data, FindData.class);
-                    return ApiResult.success().data(tableService.findOneData(findData));
+                    LinkedHashMap<String, Object> result = tableService.findOneData(findData);
+                    if (result == null) {
+                        return ApiResult.error(600, "数据表[" + findData.getTableName() + "]不存在或者数据为空");
+                    }
+                    return ApiResult.success().data(result);
                 }
                 if ("size".equalsIgnoreCase(action)) {
                     FindData findData = JSONUtil.toBean(data, FindData.class);
-                    return ApiResult.success().data(tableService.findListCount(findData));
+                    Long count = tableService.findListCount(findData);
+                    if (count == null) {
+                        return ApiResult.error(600, "数据表[" + findData.getTableName() + "]不存在或者数据为空");
+                    }
+                    return ApiResult.success().data(count);
                 }
             } catch (MySQLException e) {
                 return ApiResult.error(e.getErrorCode(), e.getErrorMessage());
