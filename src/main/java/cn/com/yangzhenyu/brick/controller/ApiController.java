@@ -31,7 +31,7 @@ public class ApiController {
 
 
     @RequestMapping("/table/{action}")
-    public ApiResult Table(@PathVariable(name = "action") String action, @PathVariable(required = false) Table table) {
+    public ApiResult Table(@PathVariable(name = "action") String action, Table table) {
         if (!StrUtil.hasBlank(action)) {
             try {
                 if ("create".equalsIgnoreCase(action)) {

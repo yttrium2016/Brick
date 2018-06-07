@@ -37,10 +37,16 @@ public class IndexController {
         CommonExample example = new CommonExample("system_table");
         List<LinkedHashMap<String, Object>> list = tableService.findListData(example);
         mv.addObject("tableList", list);
-        if (!StrUtil.hasBlank(tableName)){
+        if (!StrUtil.hasBlank(tableName)) {
             CommonExample.Criteria criteria = example.createCriteria();
-            criteria.andColumnEqualTo("table_name",tableName);
-            mv.addObject("table",tableService.findOneData(example));
+            criteria.andColumnEqualTo("table_name", tableName);
+            LinkedHashMap<String, Object> table = tableService.findOneData(example);
+            mv.addObject("table", table);
+            if (table != null) {
+                CommonExample columnExample = new CommonExample("system_column");
+                columnExample.createCriteria().andColumnEqualTo("table_name", (String) table.get("table_name"));
+                mv.addObject("columnList",tableService.findListData(columnExample));
+            }
         }
         return mv;
     }
@@ -48,5 +54,10 @@ public class IndexController {
     @RequestMapping("/table")
     public ModelAndView table() throws MySQLException {
         return table(null);
+    }
+
+    @RequestMapping("/addTable")
+    public ModelAndView addTable() throws MySQLException {
+        return new ModelAndView("add_table");
     }
 }

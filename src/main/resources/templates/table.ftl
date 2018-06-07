@@ -21,7 +21,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">主页面</a>
+            <a class="navbar-brand" href="/table">表页面</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
@@ -48,71 +48,102 @@
     <div class="header clearfix">
         <div class="input-group" style="width:700px;">
             <div class="input-group">
-                <div class="input-group-btn">
-                    <button id="btn_method" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false" style="width: 85px">GET
-                    </button>
-                    <#--<ul class="dropdown-menu method">-->
-                        <#--<li><a href="#" onclick="set_method('GET')">GET</a></li>-->
-                        <#--<li><a href="#" onclick="set_method('POST')">POST</a></li>-->
-                    <#--</ul>-->
-                </div>
-                <select class="form-control" style="width:100%;">
-                    <option value="1">a</option>
-                    <option value="1">a</option>
-                    <option value="1">a</option>
-                    <option value="1">a</option>
-                    <option value="1">a</option>
-                    <option value="1">a</option>
+                <select id="table-select" class="form-control" style="width:100%;">
+                <#if table??>
+                    <option value="" selected>请选择表</option>
+                <#else >
+                    <option value="">请选择表</option>
+                </#if>
+                <#if tableList?? && (tableList?size > 0) >
+                    <#list tableList!"" as t>
+                        <#if table?? && table.table_name == t.table_name>
+                            <option value="${t.table_name ! ''}" selected>${t.table_show_name !''}
+                                (${t.table_name ! ''})
+                            </option>
+                        <#else>
+                            <option value="${t.table_name ! ''}">${t.table_show_name !''}(${t.table_name ! ''})</option>
+                        </#if>
+                    </#list>
+                </#if>
                 </select>
-                <#--<div class="input-group-btn">-->
-                    <#--<button id="btn-method" class="btn btn-info ladda-button" data-style="slide-up" onclick="go();">-->
-                        <#--<span class="ladda-label">请求</span></button>-->
-                <#--</div>-->
+                <div class="input-group-btn">
+                    <button id="btn-table-add" class="btn btn-info">
+                        <span class="ladda-label">新建</span></button>
+                </div>
             </div>
         </div>
 
     </div>
 
-    <div class="jumbotron">
-        <h1>Jumbotron heading</h1>
-        <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus
-            commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-        <p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>
-    </div>
-
     <div class="row marketing">
-        <div class="col-lg-6">
-            <h4>Subheading</h4>
-            <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-            <h4>Subheading</h4>
-            <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet
-                fermentum.</p>
-
-            <h4>Subheading</h4>
-            <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-        </div>
-
-        <div class="col-lg-6">
-            <h4>Subheading</h4>
-            <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-            <h4>Subheading</h4>
-            <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet
-                fermentum.</p>
-
-            <h4>Subheading</h4>
-            <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+        <div class="bs-example" data-example-id="simple-table">
+            <table class="table">
+                <caption><#if table?? >${(table.table_show_name) !''}(${(table.table_name) ! ''})</#if>字段列表
+                    <button class="btn btn-info btn-sm pull-right" style="margin-right: 10px;">新建</button>
+                </caption>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>字段名</th>
+                    <th>字段显示名</th>
+                    <th>字段类型</th>
+                    <th>创建时间</th>
+                    <th>修改</th>
+                    <th>删除</th>
+                </tr>
+                </thead>
+                <tbody>
+                <#if columnList?? && (columnList?size > 0) >
+                    <#list columnList!"" as c>
+                    <tr>
+                        <th scope="row">${c_index+1}</th>
+                        <td>${c.column_name ! ''}</td>
+                        <td>${c.column_show_name ! ''}</td>
+                        <td>${c.data_type ! ''}</td>
+                        <td>${c.create_date ! ''}</td>
+                        <td>
+                            <button class="btn btn-xs btn-primary">修改</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-xs btn-danger">删除</button>
+                        </td>
+                    </tr>
+                    </#list>
+                </#if>
+                </tbody>
+            </table>
         </div>
     </div>
 
 
     <footer class="footer">
-        <p>&copy; 2016 Company, Inc.</p>
+        <p>&copy; Copyright © 2017 yttrium2016.cn </p>
     </footer>
 
+    <div id="add-from" style="display: none;padding:30px 20px 20px 20px;width: 400px">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label for="tableName" class="col-sm-4 control-label">表名(英文)</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="tableName" placeholder="表名">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="tableShowName" class="col-sm-4 control-label">显示名(中文)</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="tableShowName" placeholder="显示名">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-8">
+                    <button id="add-table-submit" class="btn btn-primary ladda-button" data-style="slide-up">保存</button>
+                    <button id="add-table-close" class="btn btn-danger" style="margin-left:20px;">关闭</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div> <!-- /container -->
+
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/layer/layer.js"></script>
@@ -120,125 +151,7 @@
 <script src="/js/ladda/ladda.min.js"></script>
 <script>
     //常量
-    var header_html = '<tr t="header"><th scope="row"><input class="cbx-header" type="checkbox"></th><td><div class="form-group group-input">' +
-            '<input type="text" onchange="key_change(this);"></div></td><td><div class="form-group group-input">' +
-            '<input type="text" onchange="value_change(this);"></div></td><td>' +
-            '<span onclick="delete_tr(this);" class="glyphicon glyphicon-remove span_delete" aria-hidden="true"></span></td></tr>';
-
-    var params_html = '<tr t="params"><th scope="row"><input class="cbx-params" type="checkbox"></th><td><div class="form-group group-input">' +
-            '<input type="text" onchange="key_change(this);"></div></td><td><div class="form-group group-input">' +
-            '<input type="text" onchange="value_change(this);"></div></td><td>' +
-            '<span onclick="delete_tr(this);" class="glyphicon glyphicon-remove span_delete" aria-hidden="true"></span></td></tr>';
-
-    var header_flag = true;
-
-    var params_flag = true;
-
-    var method = "GET";
-
-    function key_change(d) {
-        var key = $(d).val();
-        var tr = $(d).parent().parent().parent();
-        tr.attr('key', key);
-    }
-
-    function value_change(d) {
-        var value = $(d).val();
-        var tr = $(d).parent().parent().parent();
-        tr.attr('value', value);
-    }
-
-    function delete_tr(d) {
-        var tr = $(d).parent().parent();
-        tr.remove();
-    }
-
-    function add_header() {
-        $('#header_table').append(header_html);
-    }
-
-    function add_params() {
-        $('#params_table').append(params_html);
-    }
-
-    function all_header() {
-        $("input[class='cbx-header']").prop("checked", header_flag);//全选 或者 反选
-        header_flag = !header_flag;
-    }
-
-    function all_params() {
-        $("input[class='cbx-params']").prop("checked", params_flag);//全选 或者 反选
-        params_flag = !params_flag;
-    }
-
-    function set_method(str) {
-        method = str;
-        $('#btn_method').empty().append(str + '<span class="caret"></span>')
-    }
-
-    function go() {
-        var l = Ladda.create(document.getElementById('btn-method'));
-        var ajaxData = {};
-        var url = $('#input_url').val();
-        if (!url) {
-            layer.msg('请输入请求的链接值..');
-            return;
-        }
-        ajaxData.url = url;
-        ajaxData.method = method;
-        ajaxData.headers = null;
-        ajaxData.params = null;
-        $('input[type="checkbox"]:checked').each(function (i) {
-            console.log(i);
-            var tr = $(this).parent().parent();
-            var t = tr.attr('t');
-            var key = tr.attr('key');
-            var value = tr.attr('value');
-            var obj = {};
-            if (t == 'header') {
-                if (ajaxData.headers == null) ajaxData.headers = {};
-                ajaxData.headers[key] = value;
-            }
-            if (t == 'params') {
-                if (ajaxData.params == null) ajaxData.params = {};
-                ajaxData.params[key] = value;
-            }
-        });
-
-        $.ajax({
-            url: "/go",    //请求的url地址
-            async: true, //请求是否异步，默认为异步，这也是ajax重要特性
-            dataType: "JSON",
-            data: {
-                data: JSON.stringify(ajaxData)
-            },    //参数值
-            cache: false,
-            type: "GET",   //请求方式
-            beforeSend: function (XMLHttpRequest) {
-                l.start();
-            },
-            success: function (data, textStatus) {
-                if (!!data) {
-                    if (data.code == 0) {
-                        if (isJson(data.data)) {
-                            $("#show_result").html(JSON.stringify(JSON.parse(data.data), null, 2));
-                        } else {
-                            $("#show_result").html(data.data);
-                        }
-                    } else {
-                        layer.msg(data.msg);
-                    }
-                }
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                l.stop();
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log("go Ajax error");
-            }
-        });
-        return false;
-    }
+    var add_table_view; //新建表的layer框
 
     function isJson(str) {
         if (/^[\],:{}\s]*$/.test(str.replace(/\\["\\\/bfnrtu]/g, '@').replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
@@ -248,7 +161,100 @@
         }
     }
 
+    function getTableName() {
+        var arr = window.location.href.split("/");
+        return arr[arr.length - 1] == 'table' ? '' : arr[arr.length - 1];
+    }
+
+    var tableSelect = $('#table-select');
+
+    function initBtnClick() {
+        //新建表
+        $('#btn-table-add').on('click', function () {
+            add_table_view = layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                shadeClose: true,
+                scrollbar: false,
+                area: ['450px', 'auto'],
+                skin: 'layui-layer-rim', //加上边框
+                content: $('#add-from')
+            });
+            return false;
+        });
+
+        //新建表的提交
+        $('#add-table-submit').click(function () {
+            var l = Ladda.create(document.getElementById('add-table-submit'));
+            var tableName = $('#tableName').val();
+            var tableShowName = $('#tableShowName').val();
+            if (!tableName) {
+                layer.msg('表名不能为空..');
+                return false;
+            }
+            $.ajax({
+                url: "/api/table/create",    //请求的url地址
+                async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+                dataType: "JSON",
+                data: {
+                    tableName: tableName,
+                    tableShowName: tableShowName
+                },    //参数值
+                cache: false,
+                type: "GET",   //请求方式
+                beforeSend: function (XMLHttpRequest) {
+                    l.start();
+                },
+                success: function (data, textStatus) {
+                    if (data.code == 0) {
+                        layer.msg(data.msg, {
+                            time: 1800 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            location.href = '/table/' + tableName;
+                        });
+                        if (!!add_table_view) {
+                            layer.close(add_table_view);
+                        }
+                    } else {
+                        layer.msg(data.msg);
+                    }
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    l.stop();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("go Ajax error");
+                }
+            });
+            return false;
+        });
+
+        //新建表的关闭页面
+        $('#add-table-close').click(function () {
+            if (!!add_table_view) {
+                layer.close(add_table_view);
+            }
+            return false;
+        });
+
+    }
+
     $(function () {
+        var tableName = getTableName();
+        if (!tableName) {
+        }
+
+        tableSelect.on('change', function () {
+            var value = $(this).val();
+            if (!!value) {
+                location.href = '/table/' + value;
+            } else {
+                location.href = '/table';
+            }
+        });
+
+        initBtnClick();
 
     });
 

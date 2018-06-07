@@ -7,7 +7,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 将返回的时间格式数据格式化
@@ -51,7 +53,8 @@ public class DateAspect {
             }
             //后
         } catch (Exception e) {
-            //异常
+            //异常 直接抛出去
+            throw e;
         }
         return result;
     }
