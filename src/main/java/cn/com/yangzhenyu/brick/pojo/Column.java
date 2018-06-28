@@ -45,17 +45,17 @@ public class Column {
     //默认
     private String defaultData = null;
     //是否有默认
-    private boolean isDefault = false;
+    private Boolean isDefault = false;
     //是否允许为空
-    private boolean isNull = true;
+    private Boolean isNull = true;
     //是否默认修改当前时间更新
-    private boolean isDateUpdateNow = false;
+    private Boolean isDateUpdateNow = false;
 
-    private boolean isDateCreateNow = false;
+    private Boolean isDateCreateNow = false;
 
     private Date createDate;
 
-    private boolean deleteFlag;
+    private Boolean deleteFlag;
 
     public Column() {
     }
@@ -205,33 +205,33 @@ public class Column {
         }
     }
 
-    public boolean isNull() {
+    public Boolean isNull() {
         return isNull;
     }
 
-    public void setIsNull(boolean aNull) {
+    public void setIsNull(Boolean aNull) {
         isNull = aNull;
     }
 
-    public boolean isDateUpdateNow() {
+    public Boolean isDateUpdateNow() {
         return isDateUpdateNow;
     }
 
-    public void setIsDateUpdateNow(boolean dateUpdateNow) {
+    public void setIsDateUpdateNow(Boolean dateUpdateNow) {
         isDateUpdateNow = dateUpdateNow;
         isDefault = dateUpdateNow;
     }
 
-    public boolean isDateCreateNow() {
+    public Boolean isDateCreateNow() {
         return isDateCreateNow;
     }
 
-    public void setIsDateCreateNow(boolean dateCreateNow) {
+    public void setIsDateCreateNow(Boolean dateCreateNow) {
         isDateCreateNow = dateCreateNow;
         isDefault = dateCreateNow;
     }
 
-    public boolean isDefault() {
+    public Boolean isDefault() {
         return isDefault;
     }
 
@@ -243,11 +243,11 @@ public class Column {
         this.createDate = createDate;
     }
 
-    public boolean isDeleteFlag() {
+    public Boolean isDeleteFlag() {
         return deleteFlag;
     }
 
-    public void setDeleteFlag(boolean deleteFlag) {
+    public void setDeleteFlag(Boolean deleteFlag) {
         this.deleteFlag = deleteFlag;
     }
 

@@ -242,6 +242,15 @@
           UNIQUE KEY `table_name` (`table_name`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+        CREATE table IF NOT EXISTS `system_cors` (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `attr_name` varchar(255) DEFAULT NULL,
+          `url_name` varchar(1000) DEFAULT NULL,
+          `create_date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          PRIMARY KEY (`id`),
+          UNIQUE KEY `attr_name` (`attr_name`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
         CREATE table IF NOT EXISTS `system_column` (
           `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '序号',
           `table_name` varchar(255) DEFAULT NULL COMMENT '表名',
