@@ -53,6 +53,8 @@ public class CorsController {
             CommonExample example = new CommonExample("system_cors");
             CommonExample.Criteria criteria = example.createCriteria();
             criteria.andColumnEqualTo("attr_name", "/"+action);
+            CommonExample.Criteria or = example.or();
+            or.andColumnEqualTo("attr_name", action);
             List<LinkedHashMap<String, Object>> list = tableService.findListData(example);
             if (list == null || list.size() < 1) {
                 return ApiResult.error(-1, "没有对应的cors配置");
@@ -91,7 +93,9 @@ public class CorsController {
         try {
             CommonExample example = new CommonExample("system_cors");
             CommonExample.Criteria criteria = example.createCriteria();
-            criteria.andColumnEqualTo("attr_name", action);
+            criteria.andColumnEqualTo("attr_name", "/"+action);
+            CommonExample.Criteria or = example.or();
+            or.andColumnEqualTo("attr_name", action);
             List<LinkedHashMap<String, Object>> list = tableService.findListData(example);
             if (list == null || list.size() < 1) {
                 return ApiResult.error(-1, "没有对应的cors配置");
