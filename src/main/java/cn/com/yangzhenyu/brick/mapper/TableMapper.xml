@@ -671,4 +671,11 @@
         </if>
     </insert>
 
+    <!-- 直接执行SQL语句 -->
+    <select id="executeSql" parameterType="java.lang.String" resultType="java.util.LinkedHashMap">
+        <if test="sql != null and sql != ''">
+            ${sql}
+        </if>
+    </select>
+
 </mapper>

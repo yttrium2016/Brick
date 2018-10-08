@@ -196,4 +196,17 @@ public class TableServiceImpl implements TableService {
         }
     }
 
+    @Override
+    public List<LinkedHashMap<String, Object>> executeSql(String sql) throws MySQLException {
+        // 需要sql的检验 不过先不做了 自己开发的 后期后台重新开发
+        try {
+            return tableDao.executeSql(sql);
+        } catch (BadSqlGrammarException e) {
+            throw new MySQLException(e.getSQLException().getErrorCode());
+        } catch (Exception e) {
+            throw new MySQLException(500, "服务器出错[" + e.getMessage() + "]");
+        }
+    }
+
+
 }

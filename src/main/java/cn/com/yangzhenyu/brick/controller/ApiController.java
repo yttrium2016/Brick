@@ -29,6 +29,18 @@ public class ApiController {
     @Resource
     private TableService tableService;
 
+    @RequestMapping("/executeSql")
+    public ApiResult executeSql(String sql) {
+        if (!StrUtil.hasBlank(sql)) {
+            try {
+                return ApiResult.success("查询成功").data(tableService.executeSql(sql));
+            } catch (MySQLException e) {
+                return ApiResult.error(e.getErrorCode(), e.getErrorMessage());
+            }
+        }
+        return ApiResult.error("请输入正确的sql语句");
+    }
+
 
     @RequestMapping("/table/{action}")
     public ApiResult Table(@PathVariable(name = "action") String action, Table table) {

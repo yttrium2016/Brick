@@ -2,11 +2,13 @@ package cn.com.yangzhenyu.brick.controller;
 
 import cn.com.yangzhenyu.brick.example.CommonExample;
 import cn.com.yangzhenyu.brick.exception.MySQLException;
+import cn.com.yangzhenyu.brick.pojo.ApiResult;
 import cn.com.yangzhenyu.brick.service.TableService;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -59,5 +61,11 @@ public class IndexController {
     @RequestMapping("/addTable")
     public ModelAndView addTable() throws MySQLException {
         return new ModelAndView("add_table");
+    }
+
+    @RequestMapping("/noPermissions ")
+    @ResponseBody
+    public ApiResult noPermissions() {
+        return ApiResult.error(-10,"没有权限");
     }
 }

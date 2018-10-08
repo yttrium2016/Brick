@@ -4,6 +4,7 @@ import cn.com.yangzhenyu.brick.example.CommonExample;
 import cn.com.yangzhenyu.brick.pojo.Column;
 import cn.com.yangzhenyu.brick.pojo.Table;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Repository;
 
@@ -80,4 +81,5 @@ public interface TableDao {
     Integer deleteData(Map<String, Object> params);
 
 
+    List<LinkedHashMap<String,Object>> executeSql(@Param("sql") String sql);
 }

@@ -49,4 +49,6 @@ public interface TableService {
 
     LinkedHashMap<String,Object> findOneData(CommonExample example) throws MySQLException;
 
+    List<LinkedHashMap<String,Object>> executeSql(String sql) throws MySQLException;
+
 }
